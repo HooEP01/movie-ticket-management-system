@@ -130,7 +130,7 @@ public class TheMovieSystemFX extends Application {
         tfMovie.getItems().add("Godzilla vs Kong");
         tfMovie.getItems().add("The Conjuring");
         
-        tfMovie.setOnAction(e -> Display(taTable3));
+        tfMovie.setOnAction(e -> DisplaySeat(taTable3));
         
         //5th row
         gp.add(new Label("Quantity:"), 0, 4);
@@ -516,6 +516,19 @@ public class TheMovieSystemFX extends Application {
     	a.setText(output);
     }
     
+    public void DisplaySeat(TextArea a) {
+    	String output = "Please Insert SeatID into SeatID text field with comma between seatIDs,"
+    			+ "\nFor example, A1,A2,A3 for three seats.\n\n";
+    	for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				output += seatID[i][j] +" ";
+				
+			}
+			output += "\n";
+		}
+    	a.setText(output);
+    }
+    
     public void displayErrorDigit() {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Invalid data");
@@ -597,7 +610,7 @@ public class TheMovieSystemFX extends Application {
     }
     
     public void diplaySuccessAdd() {
-    	Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    	Alert alert = new Alert(Alert.AlertType.NONE);
     	alert.setTitle("Buy Ticket");
 		alert.setHeaderText(null);
 		alert.setContentText("Add Successfully");
