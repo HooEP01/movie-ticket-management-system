@@ -35,8 +35,16 @@ public class Member extends Customer{
 		return super.calcTotalPrice() - calcTotalDiscount();
 	}
 	
+	//-----print price method
+	public String printPrice() {
+		return String.format("%.2f",calcTotalDiscount())+","+String.format("%.2f",calcGrandTotal());
+	}
+	
 	//-----print method
 	public String toString() {
-		return "Grand Total: "+calcGrandTotal();
+		return super.toString()+
+				"\nMember Discount: "+ String.format("%.2f",calcTotalDiscount())+
+				"\nGrand Total: "+String.format("%.2f",calcGrandTotal());
+				
 	}
 }

@@ -31,17 +31,16 @@ public class MovieTicketSystem {
 					"\nPlease enter other customer id.";
 		}else {
 			entry.add(q);
-			info = "Added customer id: "+ q.getID()
-			+ entry.get(entry.size()-1).toString();
+			info = entry.get(entry.size()-1).printPrice();
+
 		}
 		return info;
 	}
 	
 	//-----remove ticket or remove method
-	public String remove(int id) {
-		String info = "";
+	public String[] remove(int id) {
+		String[] info;
 		int i = 0;
-		
 		for(i = 0; i < entry.size(); i++) {
 			Customer p = entry.get(i);
 			
@@ -51,11 +50,12 @@ public class MovieTicketSystem {
 		}
 		
 		if(i == entry.size()) {
-			info = "Cannot find the id";
+			info = new String[1];
+			info[0] = "null";
 		}else {
 			//-----remove customer
+			info = entry.get(i).getSeatID();
 			entry.remove(i);
-			info = "---Customer id: "+id+" is removed succefully.";
 		}
 		
 		return info;
@@ -83,14 +83,5 @@ public class MovieTicketSystem {
 		
 		return info;
 	}
-	
-    //-----display all customer's purchase detail or print method
-    public String toString() {
-    	String output = "";
-    	for(Customer q: entry) {
-    		output += q + "\n";
-    	}
-    	return output;
-    }
-	
+
 }

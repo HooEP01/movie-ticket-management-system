@@ -2,6 +2,8 @@ package application;
 //-----Author: Hoo Ern Ping
 //-----ID: B200152B
 
+import java.util.Arrays;
+
 public class Customer {
 	//-----instance variable
 	private int id;
@@ -42,7 +44,7 @@ public class Customer {
 		return name;
 	}
 	
-	public String movie() {
+	public String getMovie() {
 		return movie;
 	}
 	
@@ -67,6 +69,10 @@ public class Customer {
 		name = theName;
 	}
 	
+	public void setMovie(String theMovie) {
+		movie = theMovie;
+	}
+	
 	public void setSeatID(String[] theSeatID) {
 		seatID = theSeatID;
 	}
@@ -87,8 +93,19 @@ public class Customer {
 		return getAdultQty() * adultPrice + getKidQty() * kidPrice;
 	}
 	
+	//-----print price method
+	public String printPrice() {
+		return String.format("%.2f",calcTotalPrice());
+	}
+	
 	//-----print method
 	public String toString() {
-		return "Total Price:"+calcTotalPrice();
+		return  "Customer ID: "+getID()+
+				"\nCustomer Name: "+getName()+
+				"\nMovie: "+ getMovie()+
+				"\nCustomer Seat: "+Arrays.toString(getSeatID())+
+				"\nAdult Quantity: "+getAdultQty()+
+				"\nKid Quantity: "+getKidQty()+
+				"\nTotal Price: "+String.format("%.2f",calcTotalPrice());
 	}
 }
