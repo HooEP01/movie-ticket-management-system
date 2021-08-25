@@ -1,10 +1,6 @@
 package application;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,56 +10,61 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.SpinnerValueFactory.ListSpinnerValueFactory;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import javax.swing.JOptionPane;
 
 public class TheMovieSystemFX extends Application {
 
-	//instance of MovieTicketSystem class
-	MovieTicketSystem arrayList = new MovieTicketSystem();
-	
-	String[][] seatID ={ {"A1","A2","A3","A4"},{"B1","B2","B3","B4"},{"C1","C2","C3","C4"},{"D1","D2","D3","D4"} };
-	final int seatNumber = 16;
-	
-	//Button
+    //instance of MovieTicketSystem class
+    MovieTicketSystem arrayList = new MovieTicketSystem();
+
+    static String[][] sampleSeatID = {{"A1", "A2", "A3", "A4", "A5"}, 
+    					 			  {"B1", "B2", "B3", "B4", "B5"}, 
+    					 			  {"C1", "C2", "C3", "C4", "C5"}, 
+    					 			  {"D1", "D2", "D3", "D4", "D5"}, 
+    					 			  {"E1", "E2", "E3", "E4", "E5"}};
+    
+    String[][] seatMovieID1 = new String[5][5];
+    String[][] seatMovieID2 = new String[5][5];
+    String[][] seatMovieID3 = new String[5][5];
+    String[][] seatMovieID4 = new String[5][5];
+    
+    static String[][] seatID = new String[5][5];
+    final int seatNumber = 25;
+
+    //Button
     Button btnDis = new Button("Display");
     Button btnBuy = new Button("Purchase");
     Button btnFind = new Button("Find");
     Button btnDlt = new Button("Delete");
-    
+
     //TextArea
     TextArea taTable = new TextArea();
     TextArea taTable2 = new TextArea();
     TextArea taTable3 = new TextArea();
-    
+
     //TextField
     TextField tfCustID = new TextField();
     TextField tfCustName = new TextField();
-    
+
     //RadioButton
     RadioButton tfPCustType = new RadioButton("Member");
     RadioButton tfRCustType = new RadioButton("Non-Member");
-    
+
     //TextField
     TextField tfAdultQty = new TextField();
     TextField tfKidQty = new TextField();
@@ -73,13 +74,14 @@ public class TheMovieSystemFX extends Application {
     TextField tfdelCustID = new TextField();
     TextField tfdelSeatID = new TextField();
     TextField tffindID = new TextField();
-    
+
     //ChoiceBox
-    ChoiceBox tfMovie = new ChoiceBox();
-    
+	ChoiceBox tfMovie = new ChoiceBox();
+	ChoiceBox tfFindMovie = new ChoiceBox();
+
     //TabPane
     TabPane tabPane = new TabPane();
-    
+
     //Label
     Label lbTitle = new Label("The SKYE Movie Ticketing System");
     Label adt = new Label("Adult:");
@@ -87,12 +89,13 @@ public class TheMovieSystemFX extends Application {
     Label lbbuy = new Label("Buy Ticket");
     Label lbdis = new Label("Display Seat");
     Label lbdlt = new Label("Remove Ticket");
-    Label lbfind = new Label("Display Purchase Details");
+    Label lbfind = new Label("Display Purchased Details");
 
     //scroll pane
     ScrollPane sp = new ScrollPane(taTable);
     ScrollPane sp2 = new ScrollPane(taTable2);
     ScrollPane sp3 = new ScrollPane(taTable3);
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -129,8 +132,9 @@ public class TheMovieSystemFX extends Application {
         tfMovie.getItems().add("Avenger: End Game");
         tfMovie.getItems().add("Godzilla vs Kong");
         tfMovie.getItems().add("The Conjuring");
-        
+
         tfMovie.setOnAction(e -> DisplaySeat(taTable3));
+        
         
         //5th row
         gp.add(new Label("Quantity:"), 0, 4);
@@ -141,11 +145,11 @@ public class TheMovieSystemFX extends Application {
 
         tfAdultQty.setEditable(true);
         tfKidQty.setEditable(true);
-        
+
         //6th row
-        gp.add(new Label("Seat Display:"),0,5);
+        gp.add(new Label("Seat Display:"), 0, 5);
         gp.add(sp3, 1, 5);
-        
+
         //7th row
         gp.add(new Label("Seat ID:"), 0, 6);
         gp.add(tfSeatID, 1, 6);
@@ -153,7 +157,7 @@ public class TheMovieSystemFX extends Application {
         //8th row
         gp.add(new Label("Discount:"), 0, 7);
         gp.add(tfDisc, 1, 7);
-        
+
         //9th row
         gp.add(new Label("Total Price:"), 0, 8);
         gp.add(tfTotal, 1, 8);
@@ -171,13 +175,13 @@ public class TheMovieSystemFX extends Application {
         gp2.add(new Label("Customer ID:"), 0, 0);
         gp2.add(tfdelCustID, 1, 0);
         gp2.add(btnDlt, 2, 0);
-        
+
         /* --REMOVE SEAT ID--
         gp2.add(new Label("Seat ID:"), 0, 0);
         gp2.add(tfseatCustID, 1, 0);
         gp2.add(btnDlt, 2, 0);
-        */
-
+         */
+        
         //---------------------------------------------------------------------------------------------//
         //Find Tab
         GridPane gp3 = new GridPane();
@@ -213,45 +217,44 @@ public class TheMovieSystemFX extends Application {
         btnDis.setOnAction(e -> Display(taTable));
         btnDlt.setOnAction(e -> Delete());
         btnFind.setOnAction(e -> Find());
-        
+
         //Key Press event
         tfCustID.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.DELETE)) {
-        		displayErrorDigit();
-        		tfCustID.setText("");
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.DELETE)) {
+                displayErrorDigit();
+                tfCustID.setText("");
+            }
         });
         tfdelCustID.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.BACK_SPACE)) {
-        		displayErrorDigit();
-        		tfdelCustID.setText("");
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.BACK_SPACE)) {
+                displayErrorDigit();
+                tfdelCustID.setText("");
+            }
         });
         tffindID.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.BACK_SPACE)) {
-        		displayErrorDigit();
-        		tffindID.setText("");
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.BACK_SPACE)) {
+                displayErrorDigit();
+                tffindID.setText("");
+            }
         });
         tfAdultQty.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.BACK_SPACE)) {
-        		displayErrorDigit();
-        		tfAdultQty.setText("");
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.BACK_SPACE)) {
+                displayErrorDigit();
+                tfAdultQty.setText("");
+            }
         });
         tfKidQty.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.BACK_SPACE)) {
-        		displayErrorDigit();
-        		tfKidQty.setText("");
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.BACK_SPACE)) {
+                displayErrorDigit();
+                tfKidQty.setText("");
+            }
         });
         tfSeatID.setOnKeyPressed(e -> {
-        	if(!(e.getCode().isDigitKey()) && !(e.getCode().isLetterKey() 
-        	&& !(e.getCode()==KeyCode.COMMA)) && !(e.getCode()==KeyCode.ENTER) && !(e.getCode()==KeyCode.BACK_SPACE)) {
-        		
-        	}
+            if (!(e.getCode().isDigitKey()) && !(e.getCode().isLetterKey()
+                    && !(e.getCode() == KeyCode.COMMA)) && !(e.getCode() == KeyCode.ENTER) && !(e.getCode() == KeyCode.BACK_SPACE)) {
+
+            }
         });
-        
 
         //Button Style
         btnBuy.setStyle("-fx-background-radius:30, 30, 30, 30; "
@@ -293,11 +296,18 @@ public class TheMovieSystemFX extends Application {
         hb.setPadding(new Insets(10, 20, 10, 20));
 
         HBox dishb = new HBox();
-        dishb.getChildren().addAll(btnDis);
+       
+        tfFindMovie.getItems().add("Fast & Furious 9");
+        tfFindMovie.getItems().add("Avenger: End Game");
+        tfFindMovie.getItems().add("Godzilla vs Kong");
+        tfFindMovie.getItems().add("The Conjuring");
+        tfFindMovie.setValue("Fast & Furious 9");
+        
+        dishb.getChildren().addAll(tfFindMovie,btnDis);
         dishb.setAlignment(Pos.BASELINE_RIGHT);
         dishb.setSpacing(20);
         dishb.setPadding(new Insets(10, 20, 10, 20));
-
+        
         //add
         VBox vb = new VBox(10);
         vb.getChildren().addAll(lbbuy, gp, hb);
@@ -310,7 +320,9 @@ public class TheMovieSystemFX extends Application {
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.setPrefViewportWidth(750);
+        sp.setPrefViewportHeight(200);
         sp.setFitToWidth(true);
+        sp.setFitToHeight(true);
         taTable.setEditable(false);
 
         VBox vb2 = new VBox(10);
@@ -326,16 +338,17 @@ public class TheMovieSystemFX extends Application {
         sp2.setPrefViewportWidth(750);
         sp2.setFitToWidth(true);
         taTable2.setEditable(false);
-        
+
         //add
         sp3.setStyle("-fx-background: #B1FFFF; -fx-border-color: #90EE90;");
         sp3.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp3.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp3.setPrefViewportWidth(500);
-        sp3.setMaxHeight(150);
+        sp3.setPrefViewportHeight(250);
+
+        sp3.setFitToHeight(true);
         sp3.setFitToWidth(true);
         taTable3.setEditable(false);
-        
 
         VBox vb3 = new VBox(10);
         vb3.getChildren().addAll(lbfind, gp3, sp2);
@@ -345,7 +358,7 @@ public class TheMovieSystemFX extends Application {
 
         //Tab
         Tab tab1 = new Tab("Buy Ticket");
-        Tab tab2 = new Tab("Remove Ticket");
+        Tab tab2 = new Tab("Display/Remove Ticket");
         Tab tab3 = new Tab("Find Ticket");
         tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         tabPane.setStyle("-fx-background-color: yellow");
@@ -367,256 +380,328 @@ public class TheMovieSystemFX extends Application {
     }
 
     public void Add() {
-    	
-    	try {
-    		int custId = Integer.parseInt(tfCustID.getText());
-    		String custName =  tfCustName.getText();
-    		String custMovie = tfMovie.getValue().toString();
-    		int aQty = Integer.parseInt(tfAdultQty.getText());
-    		int kQty = Integer.parseInt(tfKidQty.getText());
 
-    		String str = "";
-    		String[] custSeat = tfSeatID.getText().split(",",aQty+kQty);
+        try {
+            int custId = Integer.parseInt(tfCustID.getText());
+            String custName = tfCustName.getText();
+            String custMovie = tfMovie.getValue().toString();
+            int aQty = Integer.parseInt(tfAdultQty.getText());
+            int kQty = Integer.parseInt(tfKidQty.getText());
 
-    		//check seat availability
-    		int found = 0;
-    		for(int i = 0; i < 4; i++) {
-    			for(int j = 0; j < 4; j++) {
-    				for(int k = 0; k < custSeat.length; k++) {
-    					if(custSeat[k].equalsIgnoreCase(seatID[i][j])) {
-    						found++;
-    					}
-    				}
-    			}	
-    		}
-    		
-    		if(custId < 100) {
-    			displayErrorId();
-    			tfCustID.setText("");
-    			tfCustID.requestFocus();
-    		}else if(custName.length() < 1) {
-    			displayErrorName();
-    			tfCustName.requestFocus();
-    		}else if(tfPCustType.isSelected() && tfRCustType.isSelected()) {
-    			displayErrorMember();
-    		}else if(custMovie == "") {//---
-    			displayErrorMovie();
-    			tfMovie.requestFocus(); //---
-    		}else if((aQty + kQty > seatNumber) && (aQty == 0|| kQty == 0)) {
-    			displayErrorQty();
-    			tfAdultQty.setText("");
-    			tfKidQty.setText("");
-    			tfAdultQty.requestFocus();
-    		}else if(!(custSeat.length == aQty + kQty)) {
-    			displayErrorSeat();
-    			tfSeatID.setText("");
-    		}else if(found == custSeat.length ) {
-    			
-    			if(tfPCustType.isSelected()) {
-    				diplaySuccessAdd();
-    				str = arrayList.add(new Member(custId,custName,custMovie,custSeat,aQty,kQty));
-    				
-    			}else if(tfRCustType.isSelected()) {
-    				diplaySuccessAdd();
-    				str = arrayList.add(new Non_Member(custId,custName,custMovie,custSeat,aQty,kQty));
-    			}
-    			
-    			String[] temp;
-    			temp = str.split(",",2);
-    			String disc = temp[0];
-    			String total = temp[1];
-    			tfDisc.setText(disc);
-    			tfTotal.setText(total);
-    			
-    			for(int i = 0; i < 4; i++) {
-    				for(int j = 0; j < 4; j++) {
-    					for(int k = 0; k < custSeat.length; k++) {
-    						if(custSeat[k].equalsIgnoreCase(seatID[i][j])) {
-    							seatID[i][j] = "XX";
-    						}
-    					}
-    				}	
-    			}
-    			
-    		}else if(!(found == custSeat.length)) {
-    			displayErrorSeatNoFound();
-    			tfSeatID.setText("");
-    		}
-    		
-    	}catch(NumberFormatException ex) {
-    		displayErrorNumberFormatException();
-    	}catch(Exception ex) {
-    		displayErrorException();
-    	}
-    	
+            String str = "";
+            String[] custSeat = tfSeatID.getText().split(",", aQty + kQty);
+
+            //check seat availability
+            int found = 0;
+            for (int i = 0; i < custSeat.length; i++) {
+                for (int j = 0; j <= 4; j++) {
+                    for (int k = 0; k <= 4; k++) {
+                        if (custSeat[i].equalsIgnoreCase(seatID[j][k])) {
+                            found++;
+                        }
+                    }
+                }
+            }
+
+            if (custId < 100) {
+                displayErrorId();
+                tfCustID.setText("");
+                tfCustID.requestFocus();
+                
+            } else if (custName.length() < 1) {
+                displayErrorName();
+                tfCustName.requestFocus();
+                
+            } else if (tfPCustType.isSelected() && tfRCustType.isSelected()) {
+                displayErrorMember();
+                
+            } else if (custMovie == "") {
+                displayErrorMovie();
+                tfMovie.requestFocus();
+                
+            } else if ((aQty + kQty > seatNumber) && (aQty == 0 || kQty == 0)) {
+                displayErrorQty();
+                tfAdultQty.setText("");
+                tfKidQty.setText("");
+                tfAdultQty.requestFocus();
+                
+            } else if (!(custSeat.length == aQty + kQty)) {
+                displayErrorSeat();
+                tfSeatID.setText("");
+                
+            } else if (found == custSeat.length) {
+
+                if (tfPCustType.isSelected()) {
+                    displaySuccessAdd();
+                    str = arrayList.add(new Member(custId, custName, custMovie, custSeat, aQty, kQty));
+
+                } else if (tfRCustType.isSelected()) {
+                    displaySuccessAdd();
+                    str = arrayList.add(new Non_Member(custId, custName, custMovie, custSeat, aQty, kQty));
+                }
+
+                String[] temp;
+                temp = str.split(",", 2);
+                String disc = temp[0];
+                String total = temp[1];
+                tfDisc.setText(disc);
+                tfTotal.setText(total);
+
+                for (int i = 0; i < custSeat.length; i++) {
+                    for (int j = 0; j <= 4; j++) {
+                        for (int k = 0; k <= 4; k++) {
+                            if (custSeat[i].equalsIgnoreCase(seatID[j][k])) {
+                                seatID[j][k] = "XX";
+                            }
+                        }
+                    }
+                }
+
+            } else if (!(found == custSeat.length)) {
+                displayErrorSeatNoFound();
+                tfSeatID.setText("");
+            }
+
+        } catch (NumberFormatException ex) {
+            displayErrorNumberFormatException();
+//        } catch (Exception ex) {
+//            displayErrorException();
+        }
+
     }
-    
+
     public void Find() {
-    	String info = "";
-		int custId = Integer.parseInt(tffindID.getText());
-		
-		if(custId < 100) { //at least three integer.
-			displayErrorId();
-			tffindID.setText("");
-			tffindID.requestFocus();
-		}else {
-			info = arrayList.search(custId);
-			taTable2.setText(info);
-		}
-    }
-    
-    public void Delete() {
-    	int custId = Integer.parseInt(tfdelCustID.getText());
-    	String[] custSeat;
-		if(custId < 100) {
-			displayErrorId();
-			tfdelCustID.setText("");
-			tfdelCustID.requestFocus();
-		}else {
-			
-			custSeat = arrayList.remove(custId);
-			if(custSeat[0].equals("null")) {
-				taTable.setText("Cannot find the id.");
-			}else {
-				char p;
-				char q;
-				int r = 0;
-				int s = 0;
+        String info = "";
+        int custId = Integer.parseInt(tffindID.getText());
 
-				for(int i = 0; i < custSeat.length; i++) {
-					p = custSeat[i].charAt(0);
-					if( p == 'A') {
-						r = 0;
-					}else if( p == 'B') {
-						r = 1;	
-					}else if (p == 'C') {
-						r = 2;
-					}else if ( p == 'D') {
-						r = 3;
-					}
-					q = custSeat[i].charAt(1);
-					s=Integer.parseInt(String.valueOf(q))-1;
-					
-					seatID[r][s] = custSeat[i];	
-				}
-				
-			}
-		}
+        if (custId < 100) { //at least three integer.
+            displayErrorId();
+            tffindID.setText("");
+            tffindID.requestFocus();
+        } else {
+            info = arrayList.search(custId);
+            taTable2.setText(info);
+        }
     }
-    
+
+    public void Delete() {
+        int custId = Integer.parseInt(tfdelCustID.getText());
+        String[] custSeat;
+        if (custId < 100) {
+            displayErrorId();
+            tfdelCustID.setText("");
+            tfdelCustID.requestFocus();
+            
+        } else {
+            custSeat = arrayList.remove(custId);
+            if (custSeat[0].equals("null")) {
+            	displayUnSuccessRemove();
+                
+            } else {
+            	displaySuccessRemove();
+                char p;
+                char q;
+                int r = 0;
+                int s = 0;
+
+                for (int i = 0; i < custSeat.length; i++) {
+                    p = custSeat[i].charAt(0);
+                    if (p == 'A') {
+                        r = 0;
+                    } else if (p == 'B') {
+                        r = 1;
+                    } else if (p == 'C') {
+                        r = 2;
+                    } else if (p == 'D') {
+                        r = 3;
+                    } else if (p == 'E') {
+                        r = 4;
+                    }
+                    q = custSeat[i].charAt(1);
+                    s = Integer.parseInt(String.valueOf(q)) - 1;
+
+                    seatID[r][s] = custSeat[i];
+                }
+
+            }
+        }
+    }
+
     public void Display(TextArea a) {
-    	String output = "";
-    	for(int i = 0; i < 4; i++) {
-			for(int j = 0; j < 4; j++) {
-				output += seatID[i][j] +" ";
-				
-			}
-			output += "\n";
-		}
-    	a.setText(output);
+    	String custMovie = tfFindMovie.getValue().toString();
+    	if(custMovie.equals("Fast & Furious 9")) {
+        	createSeatID(seatMovieID1);
+        }else if(custMovie.equals("Avenger: End Game")) {
+        	createSeatID(seatMovieID2);
+        }else if(custMovie.equals("Godzilla vs Kong")) {
+        	createSeatID(seatMovieID3);
+        }else if(custMovie.equals("The Conjuring")) {
+        	createSeatID(seatMovieID4);
+        }else {
+        	//empty
+        }
+        String output = "\n\t\t\t\t\t\t|\t\t\tMovie Screen\t\t\t\t|\n\n";
+        
+        for (int i = 0; i <= 4; i++) {
+            output += "\t\t\t\t\t\t";
+            for (int j = 0; j <= 4; j++) {
+                output += " | " + seatID[i][j] + " | \t";
+
+            }
+            output += "\n";
+        }
+        a.setText(output);
     }
-    
+
     public void DisplaySeat(TextArea a) {
-    	String output = "Please Insert SeatID into SeatID text field with comma between seatIDs,"
-    			+ "\nFor example, A1,A2,A3 for three seats.\n\n";
-    	for(int i = 0; i < 4; i++) {
-			for(int j = 0; j < 4; j++) {
-				output += seatID[i][j] +" ";
-				
-			}
-			output += "\n";
+    	String custMovie = tfMovie.getValue().toString();
+        
+        if(custMovie.equals("Fast & Furious 9")) {
+        	createSeatID(seatMovieID1);
+        }else if(custMovie.equals("Avenger: End Game")) {
+        	createSeatID(seatMovieID2);
+        }else if(custMovie.equals("Godzilla vs Kong")) {
+        	createSeatID(seatMovieID3);
+        }else if(custMovie.equals("The Conjuring")) {
+        	createSeatID(seatMovieID4);
+        }else {
+        	//empty
+        }
+    	
+    	
+        String output = "Please Insert SeatID into SeatID text field with comma between seatIDs,"
+                + "\nFor example, A1,A2,A3 for three seats.\n"
+                + "\n\t\t|\t\t\tMovie Screen\t\t\t\t|\n\n";
+        for (int i = 0; i <= 4; i++) {
+            output += "\t\t";
+            for (int j = 0; j <= 4; j++) {
+                output += " | " + seatID[i][j] + " | \t";
+
+            }
+            output += "\n";
+        }
+        a.setText(output);
+    	
+    }
+    
+	public static void createSeatID(String[][] id) {
+		boolean empty = true;
+		
+		
+		for(int i=0; i<=4;i++) {
+        	for(int j=0; j<=4; j++) {
+        		if(id[i][j] != null) {
+        			empty = false;
+        			break;
+        		}
+        	}
+    	}
+	
+		if(empty) {
+	    	for(int i=0; i<=4;i++) {
+	        	for(int j=0; j<=4; j++) {
+	        		id[i][j] = sampleSeatID[i][j];
+	        	}
+	    	}
+		}else {
+		// empty	
 		}
-    	a.setText(output);
+		seatID = id;
+
     }
-    
+
     public void displayErrorDigit() {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Invalid data");
-		alert.setHeaderText(null);
-		alert.setContentText("Enter digits only!");
-		alert.show();
-	}
-    
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid data");
+        alert.setHeaderText(null);
+        alert.setContentText("Enter digits only!");
+        alert.show();
+    }
+
     public void displayErrorId() {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Invalid data in Customer ID");
-		alert.setHeaderText(null);
-		alert.setContentText("Enter atleast three integers!");
-		alert.show();
-	}
-    
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid data in Customer ID");
+        alert.setHeaderText(null);
+        alert.setContentText("Enter atleast three integers!");
+        alert.show();
+    }
+
     public void displayErrorName() {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Invalid data in Customer Name");
-		alert.setHeaderText(null);
-		alert.setContentText("Please enter your name!");
-		alert.show();
-	}
-    
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid data in Customer Name");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter your name!");
+        alert.show();
+    }
+
     public void displayErrorMember() {
-    	Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Invalid data in Customer Type");
-		alert.setHeaderText(null);
-		alert.setContentText("Please select one customer type.");
-		alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid data in Customer Type");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select one customer type.");
+        alert.show();
     }
-    
+
     public void displayErrorMovie() {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error in Movie Name");
-		alert.setHeaderText(null);
-		alert.setContentText("Please select one Movie!");
-		alert.show();
-	}
-    
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in Movie Name");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select one Movie!");
+        alert.show();
+    }
+
     public void displayErrorQty() {
-    	Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error in Adult and Kid Quantity");
-		alert.setHeaderText(null);
-		alert.setContentText("Please select quantity not more than number of seat available.");
-		alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in Adult and Kid Quantity");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select quantity not more than number of seat available.");
+        alert.show();
     }
-    
+
     public void displayErrorSeat() {
-    	Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error in Seat ID");
-		alert.setHeaderText(null);
-		alert.setContentText("The number of selected seat is unmatch with quality of adult and kid.");
-		alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in Seat ID");
+        alert.setHeaderText(null);
+        alert.setContentText("The number of selected seat is unmatch with quality of adult and kid.");
+        alert.show();
     }
-    
+
     public void displayErrorSeatNoFound() {
-    	Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error in Seat ID");
-		alert.setHeaderText(null);
-		alert.setContentText("The selected seat(s) is or are no found");
-		alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in Seat ID");
+        alert.setHeaderText(null);
+        alert.setContentText("The selected seat(s) is or are not found");
+        alert.show();
     }
-    
+
     public void displayErrorNumberFormatException() {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Invalid data");
-		alert.setHeaderText(null);
-		alert.setContentText("Please enter integer number!");
-		alert.show();
-	}
-    
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid data");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter integer number!");
+        alert.show();
+    }
+
     public void displayErrorException() {
-    	Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error");
-		alert.setHeaderText(null);
-		alert.setContentText("Error occurs.");
-		alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Error occurs.");
+        alert.show();
+    }
+
+    public void displaySuccessAdd() {
+        JOptionPane.showMessageDialog(null, "Added Successfully");
     }
     
-    public void diplaySuccessAdd() {
-    	Alert alert = new Alert(Alert.AlertType.NONE);
-    	alert.setTitle("Buy Ticket");
-		alert.setHeaderText(null);
-		alert.setContentText("Add Successfully");
-		alert.show();
+    public void displayUnSuccessRemove() {
+        JOptionPane.showMessageDialog(null, "Remove Unsuccessfully, cannot find the customer id.");
     }
     
+    public void displaySuccessRemove() {
+        JOptionPane.showMessageDialog(null, "Remove Successfully");
+    }
+
     //Spinner Coverter
     class MyConverter extends StringConverter<Integer> {
 
