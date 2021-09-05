@@ -61,6 +61,23 @@ public class MovieTicketSystem {
 		return info;
 	}
 	
+	// Get Movie method
+	public String getMovie(int id) {
+		int i = 0;
+		for(i = 0; i < entry.size(); i++) {
+			Customer p = entry.get(i);
+			
+			if(p.getID() == id) {
+				break;
+			}
+		}
+		if(i == entry.size()) {
+			return null;
+		}else {
+			return entry.get(i).getMovie();
+		}
+	}
+	
 	//-----select one customer or search method
 	public String search(int id) {
 		String info = "";
